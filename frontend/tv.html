@@ -129,8 +129,8 @@
 <body>
 <!-- Estrutura da tela Tv criada para exibir o local e o nome do paciente chamado -->
  <div class="tv-container">
-    <div class="left">
-        <div class="boxlocal-box">
+    <div class="left-panel">
+        <div class="box local-box">
            <div class="box-title" id="local-tipo">GUICHÊ</div>
            <div class="local-number" id="local-numero">--</div>
         </div>
@@ -140,7 +140,7 @@
             <ul id="history-list"></ul>
         </div>
     </div>
-    <div class="right-panel-panel">
+    <div class="right-panel">
         <div class="box patient-box">
             <div class="box-title">PACIENTE</div>
             <div class="patient-name" id="patient-name">AGUARDANDO...</div>
@@ -151,7 +151,7 @@
     </div>
  </div>
  <script>
-    let ultmold = null;
+    let ultimold = null;
     // Função criada para buscar a chamada atual e o histótico da Tv em tempo real.
     function atualizar() {
         fetch("/tv/chamada")
@@ -178,7 +178,7 @@
                 list.innerHTML = "";
                 historico.slice(0.4).array.forEach(h => {
                     const li = document.createElement("li");
-                    const tipo = h.localTipo ? h.localTipo.substring(0.4) : "GUIC";
+                    const tipo = h.localTipo ? h.localTipo.substring(0,4) : "GUIC";
                     li.innerText = `$(tipo), ${h.localNumero} - ${h.paciente}`;
                     list.appendChild(li);
 
