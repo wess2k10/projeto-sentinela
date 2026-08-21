@@ -1,0 +1,229 @@
+/* ==========================================================================
+   1. VARIÁVEIS DE CORES & CONFIGURAÇÕES GERAIS
+   ========================================================================== */
+:root {
+  /* Fundo e Estrutura */
+  --bg-primary: #f0f4f8;          /* Fundo azul-acinzentado suave */
+  --card-bg: #ffffff;             /* Fundo dos cartões e contêineres */
+  --text-primary: #1e293b;        /* Texto escuro legível */
+  --text-muted: #64748b;          /* Texto secundário */
+  --border-color: #cbd5e1;        /* Bordas bem definidas, mas suaves */
+  
+  /* Cores Principais do Sistema */
+  --primary-color: #2563eb;       /* Azul vívido e profissional */
+  --primary-hover: #1d4ed8;       /* Azul escuro para hover */
+  --primary-shadow: rgba(37, 99, 235, 0.25);
+
+  /* Classificação de Risco (Cores equilibradas e vibrantes) */
+  --risco-verde: #16a34a;
+  --risco-verde-bg: #dcfce7;
+  --risco-amarelo: #d97706;
+  --risco-amarelo-bg: #fef3c7;
+  --risco-vermelho: #dc2626;
+  --risco-vermelho-bg: #fee2e2;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ==========================================================================
+   2. CONTAINER PRINCIPAL
+   ========================================================================== */
+.container {
+  background-color: var(--card-bg);
+  width: 100%;
+  max-width: 550px;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  border: 1px solid var(--border-color);
+}
+
+h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 24px 0;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  max-width: 140px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   3. FORMULÁRIOS & ENTRADAS DE DADOS
+   ========================================================================== */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 16px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-color);
+  font-size: 15px;
+  background-color: #f8fafc;
+  color: var(--text-primary);
+  transition: all 0.2s ease-in-out;
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  background-color: #ffffff;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px var(--primary-shadow);
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Customização do input de arquivos */
+input[type="file"] {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   4. BOTÕES COM MAIS DETALHES VISUAIS
+   ========================================================================== */
+button {
+  width: 100%;
+  padding: 12px 20px;
+  margin-top: 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--primary-color);
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--primary-shadow);
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 16px var(--primary-shadow);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px var(--primary-shadow);
+}
+
+/* ==========================================================================
+   5. CARDS & CLASSIFICAÇÃO DE RISCO
+   ========================================================================== */
+.card {
+  border: 1px solid var(--border-color);
+  padding: 18px;
+  margin: 14px 0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: #94a3b8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.card p {
+  margin: 6px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.card p b {
+  color: var(--text-primary);
+}
+
+/* Badges de Triagem/Risco */
+.verde,
+.amarelo,
+.vermelho {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.verde {
+  background-color: var(--risco-verde-bg);
+  color: var(--risco-verde);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.amarelo {
+  background-color: var(--risco-amarelo-bg);
+  color: var(--risco-amarelo);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.vermelho {
+  background-color: var(--risco-vermelho-bg);
+  color: var(--risco-vermelho);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+/* Div de resultado na tela de triagem */
+#resultado {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 15px;
+}
