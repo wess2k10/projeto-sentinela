@@ -5,45 +5,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Hospital Aura</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
   <div class="container">
     <div class="logo-container">
-      <img src="logo.png" alt="Logo Hospital Aura" class="logo">
+      <img src="/logo.png" alt="Logo Hospital Aura" class="logo">
     </div>
 
     <h2>Hospital Aura</h2>
-    
-    <input id="usuario" placeholder="Usuário">
-    <input id="senha" type="password" placeholder="Senha">
+
+    <input id="usuario" placeholder="Usuário" autocomplete="username">
+    <input id="senha" type="password" placeholder="Senha" autocomplete="current-password">
     <button onclick="login()">Entrar</button>
   </div>
 
   <script>
-    function login() {
-      fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          usuario: usuario.value,
-          senha: senha.value
-        })
-      })
-        .then(r => r.json())
-        .then(data => {
-          if (data.tipo === "triagem") location.href = "triagem.html";
-          if (data.tipo === "medico") location.href = "medico.html";
-          if (data.tipo === "atendimento") location.href = "atendimento.html";
+    async function login() {
+      try {
+        // Use the same host serving this page. This avoids sending Render logins
+        // to localhost, which has a different user database.
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuario: document.getElementById("usuario").value,
+            senha: document.getElementById("senha").value
+          })
         });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert(data.erro || "Usuário ou senha inválidos.");
+          return;
+        }
+
+        if (data.tipo === "triagem") location.href = "/triagem.html";
+        else if (data.tipo === "medico") location.href = "/medico.html";
+        else if (data.tipo === "atendimento") location.href = "/atendimento.html";
+        else alert("O usuário não possui um setor válido.");
+      } catch (error) {
+        console.error("Erro ao fazer login:", error);
+        alert("Não foi possível conectar ao servidor. Tente novamente.");
+      }
     }
 
-    //Atalho secreto : Ctrl + Alt + A redireciona para admin.html
-    window.addEventListener("keydown", function(e) {
-      if (e.ctrlKey && e.altKey && (e.key === "a" || e.key ==="A")) {
+    // Atalho secreto: Ctrl + Alt + A redireciona para admin.html
+    window.addEventListener("keydown", function (e) {
+      if (e.ctrlKey && e.altKey && (e.key === "a" || e.key === "A")) {
         e.preventDefault();
-        window.location.href = "admin.html"
+        window.location.href = "/admin.html";
       }
     });
   </script>
