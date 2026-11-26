@@ -22,7 +22,12 @@ function readDB() {
     };
   }
 
-  return JSON.parse(fs.readFileSync(DB_FILE));
+  const db = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
+  db.usuarios = Array.isArray(db.usuarios) ? db.usuarios : [];
+  db.pacientes = Array.isArray(db.pacientes) ? db.pacientes : [];
+  db.triagens = Array.isArray(db.triagens) ? db.triagens : [];
+  db.consultas = Array.isArray(db.consultas) ? db.consultas : [];
+  return db;
 }
 
 function writeDB(data) {
@@ -45,6 +50,35 @@ app.post("/login", (req, res) => {
   }
 
   res.json(user);
+});
+
+// USUÁRIOS
+app.get("/usuarios", (req, res) => {
+  const db = readDB();
+  // Não enviar senhas para o navegador.
+  res.json(db.usuarios.map(({ senha, ...usuario }) => usuario));
+});
+
+app.post("/usuarios", (req, res) => {
+  const { usuario, senha, tipo } = req.body || {};
+
+  if (!usuario || !senha || !tipo) {
+    return res.status(400).json({ erro: "Informe usuário, senha e setor." });
+  }
+
+  const db = readDB();
+  const novoUsuario = {
+    id: Date.now(),
+    usuario,
+    senha,
+    tipo
+  };
+
+  db.usuarios.push(novoUsuario);
+  writeDB(db);
+
+  const { senha: _senha, ...usuarioSemSenha } = novoUsuario;
+  res.status(201).json(usuarioSemSenha);
 });
 
 // ATENDIMENTO
