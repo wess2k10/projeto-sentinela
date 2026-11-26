@@ -145,5 +145,13 @@ app.get("/medicacoes", (req, res) => {
   res.json(db.consultas);
 });
 
-// START
+// Render fornece a porta pela variável de ambiente PORT.
+const PORT = process.env.PORT || 3000;
+
+if (require.main === module) {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Hospital Aura rodando na porta ${PORT}`);
+  });
+}
+
 module.exports = app;
