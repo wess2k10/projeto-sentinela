@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Pro - Almoxarifado</title>
+    <style>
+        :root {
+            --bg-primary: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-shadow: rgba(37, 99, 235, 0.2);
+            --risco-verde: #16a34a;
+            --risco-verde-bg: #dcfce7;
+            --risco-amarelo: #d97706;
+            --risco-amarelo-bg: #fef3c7;
+            --risco-vermelho: #dc2626;
+            --risco-vermelho-bg: #fee2e2;
+            --slate-500: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        a:focus-visible,
+        .chip:focus-visible {
+            outline: 3px solid rgba(37, 99, 235, 0.3);
+            outline-offset: 2px;
+        }
+
+        .navbar {
+            display: flex;
+            min-height: 82px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 14px max(24px, calc((100% - 1440px) / 2));
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 3px 14px rgba(30, 41, 59, 0.04);
+        }
+
+        .nav-brand,
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            position: relative;
+            display: grid;
+            width: 46px;
+            height: 46px;
+            flex: 0 0 46px;
+            place-items: center;
+            border-radius: 14px;
+            background: #eff6ff;
+        }
+
+        .logo-icon::before {
+            content: "✚";
+            color: var(--primary-color);
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .nav-brand h1 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 19px;
+            font-weight: 750;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-brand span {
+            display: block;
+            margin-top: 2px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .nav-user {
+            gap: 12px;
+        }
+
+        .user-pill {
+            max-width: 220px;
+            overflow: hidden;
+            padding: 7px 12px;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 13px;
+            font-weight: 650;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-nav {
+            display: inline-flex;
+            min-height: 38px;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 650;
+            text-decoration: none;
+            transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+        }
+
+        .btn-nav:hover {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+            color: var(--primary-color);
+        }
+
+        .container {
+            width: min(100% - 48px, 1440px);
+            margin: 28px auto 48px;
+        }
+
+        .alerta-estoque {
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 13px 16px;
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            background: var(--risco-amarelo-bg);
+            color: #92400e;
+        }
+
+        .alerta-estoque strong {
+            white-space: nowrap;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            display: flex;
+            min-height: 104px;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: var(--card-bg);
+            box-shadow: 0 3px 12px rgba(30, 41, 59, 0.04);
+        }
+
+        .stat-icon {
+            display: grid;
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            place-items: center;
+            border-radius: 13px;
+            font-size: 21px;
+        }
+
+        .stat-icon.purple {
+            background: #eff6ff;
+        }
+
+        .stat-icon.green {
+            background: var(--risco-verde-bg);
+        }
+
+        .stat-icon.orange {
+            background: var(--risco-amarelo-bg);
+        }
+
+        .stat-icon.red {
+            background: var(--risco-vermelho-bg);
+        }
+
+        .stat-value {
+            color: var(--text-primary);
+            font-size: 25px;
+            font-weight: 750;
+            line-height: 1.15;
+        }
+
+        .stat-label {
+            margin-top: 5px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(300px, 0.78fr) minmax(0, 1.7fr);
+            align-items: start;
+            gap: 22px;
+        }
+
+        .card {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            background: var(--card-bg);
+            box-shadow: 0 4px 16px rgba(30, 41, 59, 0.045);
+        }
+
+        .card-header {
+            display: flex;
+            min-height: 62px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e8edf3;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .entrada-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-bottom: 21px;
+            padding: 4px;
+            border-radius: 11px;
+            background: #f1f5f9;
+        }
+
+        .tab-btn {
+            min-height: 39px;
+            padding: 8px 10px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 650;
+            transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: #fff;
+            color: var(--primary-color);
+            box-shadow: 0 1px 4px rgba(30, 41, 59, 0.12);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .form-control,
+        .search-input {
+            width: 100%;
+            min-height: 43px;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            background: #f8fafc;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .form-control::placeholder,
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-control:focus,
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--primary-shadow);
+        }
+
+        .btn-full {
+            display: inline-flex;
+            width: 100%;
+            min-height: 45px;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 16px;
+            border: 0;
+            border-radius: 9px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .btn-purple {
+            background: var(--primary-color);
+            box-shadow: 0 4px 10px var(--primary-shadow);
+        }
+
+        .btn-purple:hover {
+            background: var(--primary-hover);
+            box-shadow: 0 6px 14px var(--primary-shadow);
+            transform: translateY(-1px);
+        }
+
+        .btn-sm {
+            display: inline-flex;
+            min-height: 34px;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 10px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 650;
+            white-space: nowrap;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .btn-secondary {
+            border-color: var(--border-color);
+            background: #fff;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            border-color: #94a3b8;
+            background: #f8fafc;
+        }
+
+        .btn-success {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-danger-sm {
+            border-color: #fecaca;
+            background: var(--risco-vermelho-bg);
+            color: var(--risco-vermelho);
+        }
+
+        .btn-danger-sm:hover {
+            border-color: #fca5a5;
+            background: #fecaca;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 13px;
+        }
+
+        .search-bar::before {
+            position: absolute;
+            top: 50%;
+            left: 13px;
+            z-index: 1;
+            color: #94a3b8;
+            content: "⌕";
+            font-size: 21px;
+            line-height: 1;
+            transform: translateY(-55%);
+            pointer-events: none;
+        }
+
+        .search-input {
+            padding-left: 39px;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 2px 1px 10px;
+            scrollbar-width: thin;
+        }
+
+        .chip {
+            flex: 0 0 auto;
+            padding: 6px 11px;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            background: #fff;
+            color: #475569;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+
+        .chip:hover {
+            border-color: #93c5fd;
+            color: var(--primary-color);
+        }
+
+        .chip.active {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .estoque-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+        }
+
+        .estoque-table th {
+            padding: 11px 12px;
+            border-top: 1px solid #e8edf3;
+            border-bottom: 1px solid #e8edf3;
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.045em;
+            text-align: left;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .estoque-table th:first-child {
+            border-top-left-radius: 8px;
+        }
+
+        .estoque-table th:last-child {
+            border-top-right-radius: 8px;
+        }
+
+        .estoque-table td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #edf1f5;
+            color: var(--text-muted);
+            vertical-align: middle;
+        }
+
+        .estoque-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .estoque-table tbody tr:hover td {
+            background: #f8fbff;
+        }
+
+        .med-name {
+            min-width: 130px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .med-cat {
+            min-width: 110px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .stock-badge {
+            display: inline-flex;
+            min-width: 60px;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .stock-ok {
+            border-color: rgba(22, 163, 74, 0.18);
+            background: var(--risco-verde-bg);
+            color: var(--risco-verde);
+        }
+
+        .stock-low {
+            border-color: rgba(217, 119, 6, 0.18);
+            background: var(--risco-amarelo-bg);
+            color: var(--risco-amarelo);
+        }
+
+        .stock-critical,
+        .stock-empty {
+            border-color: rgba(220, 38, 38, 0.18);
+            background: var(--risco-vermelho-bg);
+            color: var(--risco-vermelho);
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .empty-state {
+            padding: 24px 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .empty-icon {
+            margin-bottom: 5px;
+            font-size: 25px;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .hist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .hist-item:last-child {
+            border-bottom: 0;
+        }
+
+        .hist-icon {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            place-items: center;
+            border-radius: 11px;
+            background: #eff6ff;
+        }
+
+        .hist-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .hist-med {
+            overflow: hidden;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 650;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .hist-sub {
+            margin-top: 2px;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .hist-qty-pos {
+            color: var(--risco-verde);
+            font-size: 12px;
+            font-weight: 700;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.52);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            width: min(100%, 440px);
+            padding: 23px;
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.2);
+        }
+
+        .modal-title {
+            margin-bottom: 18px;
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 750;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+            margin-top: 18px;
+        }
+
+        .modal-actions .btn-sm {
+            min-width: 96px;
+            min-height: 39px;
+            font-size: 13px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 20;
+            max-width: min(420px, calc(100vw - 32px));
+            padding: 13px 17px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.16);
+            color: var(--text-primary);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-success {
+            border-color: #86efac;
+            background: #f0fdf4;
+            color: #166534;
+        }
+
+        .toast-error {
+            border-color: #fca5a5;
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .toast-warning {
+            border-color: #fcd34d;
+            background: #fffbeb;
+            color: #92400e;
+        }
+
+        @media (max-width: 1050px) {
+            .main-grid {
+                grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.4fr);
+                gap: 16px;
+            }
+
+            .card-header,
+            .card-body {
+                padding-right: 16px;
+                padding-left: 16px;
+            }
+
+            .estoque-table th,
+            .estoque-table td {
+                padding-right: 9px;
+                padding-left: 9px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .container {
+                width: min(100% - 32px, 680px);
+                margin-top: 20px;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .stat-card {
+                min-height: 88px;
+                padding: 14px;
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .navbar {
+                min-height: auto;
+                align-items: flex-start;
+                padding: 13px 16px;
+            }
+
+            .nav-brand {
+                gap: 10px;
+            }
+
+            .logo-icon {
+                width: 39px;
+                height: 39px;
+                flex-basis: 39px;
+                border-radius: 11px;
+            }
+
+            .logo-icon::before {
+                font-size: 23px;
+            }
+
+            .nav-brand h1 {
+                font-size: 15px;
+            }
+
+            .nav-brand span {
+                max-width: 205px;
+                font-size: 11px;
+                line-height: 1.35;
+            }
+
+            .nav-user {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 6px;
+            }
+
+            .user-pill {
+                max-width: 135px;
+                padding: 5px 8px;
+                font-size: 11px;
+            }
+
+            .btn-nav {
+                min-height: 30px;
+                padding: 4px 10px;
+                font-size: 12px;
+            }
+
+            .container {
+                width: calc(100% - 24px);
+                margin: 14px auto 28px;
+            }
+
+            .stats-bar {
+                gap: 9px;
+                margin-bottom: 14px;
+            }
+
+            .stat-card {
+                min-height: 76px;
+                gap: 10px;
+                padding: 11px;
+                border-radius: 12px;
+            }
+
+            .stat-icon {
+                width: 38px;
+                height: 38px;
+                flex-basis: 38px;
+                border-radius: 11px;
+                font-size: 17px;
+            }
+
+            .stat-value {
+                font-size: 21px;
+            }
+
+            .stat-label {
+                font-size: 11px;
+                line-height: 1.3;
+            }
+
+            .card {
+                border-radius: 12px;
+            }
+
+            .card-header {
+                min-height: 56px;
+                gap: 8px;
+                padding: 13px;
+            }
+
+            .card-header h2 {
+                font-size: 14px;
+            }
+
+            .card-header .btn-sm {
+                min-height: 31px;
+                padding: 5px 8px;
+                font-size: 11px;
+            }
+
+            .card-body {
+                padding: 14px;
+            }
+
+            .entrada-tabs {
+                gap: 3px;
+            }
+
+            .tab-btn {
+                padding-right: 6px;
+                padding-left: 6px;
+                font-size: 11px;
+            }
+
+            .alerta-estoque {
+                gap: 5px;
+                padding: 11px 12px;
+                font-size: 13px;
+            }
+
+            .hist-item {
+                gap: 9px;
+            }
+
+            .hist-sub {
+                font-size: 10px;
+            }
+
+            .hist-qty-pos {
+                font-size: 11px;
+            }
+
+            .modal-box {
+                padding: 18px;
+            }
+
+            .toast {
+                right: 12px;
+                bottom: 12px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .navbar {
+                flex-wrap: wrap;
+                align-items: center;
+                row-gap: 10px;
+            }
+
+            .nav-brand {
+                flex: 1 1 100%;
+            }
+
+            .nav-user {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .user-pill {
+                max-width: calc(100% - 65px);
+            }
+
+            .stat-card {
+                gap: 7px;
+                padding: 9px;
+            }
+
+            .stat-icon {
+                width: 32px;
+                height: 32px;
+                flex-basis: 32px;
+                font-size: 15px;
+            }
+
+            .stat-label {
+                font-size: 10px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-brand">
+        <div class="logo-icon"></div>
+        <div>
+            <h1>Hospital Pro - Almoxarifado</h1>
+            <span>Gestão de Entrada e Controle de Estoque</span>
+        </div>
+    </div>
+
+    <div class="nav-user">
+        <span class="user-pill" id="nomeUsuario">Almoxarifado</span>
+        <a href="index.html" class="btn-nav">Sair</a>
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="alerta-estoque" id="alertaEstoque" style="display:none">
+        <strong>Atenção!</strong>
+        <span id="alertaTexto"></span>
+    </div>
+
+    <div class="stats-bar">
+
+        <div class="stat-card">
+            <div class="stat-icon purple">📦</div>
+            <div>
+                <div class="stat-value" id="statItens">0</div>
+                <div class="stat-label">Tipos cadastrados</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon green">🟢</div>
+            <div>
+                <div class="stat-value" id="statOk">0</div>
+                <div class="stat-label">Estoque normal</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon orange">⚠️</div>
+            <div>
+                <div class="stat-value" id="statBaixo">0</div>
+                <div class="stat-label">Estoque baixo</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon red">🚫</div>
+            <div>
+                <div class="stat-value" id="statZerado">0</div>
+                <div class="stat-label">Zerados / Esgotados</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="main-grid">
+
+        <!-- COLUNA ESQUERDA -->
+
+        <div>
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h2>Entrada de medicamentos</h2>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="entrada-tabs">
+                        <button class="tab-btn active" id="tabNovo"
+                            onclick="setTab('novo')">
+                            Novo Medicamento
+                        </button>
+
+                        <button class="tab-btn" id="tabRepor"
+                            onclick="setTab('repor')">
+                            Repor Existente
+                        </button>
+                    </div>
+
+                    <!-- NOVO MEDICAMENTO -->
+
+                    <div id="painelNovo">
+
+                        <div class="form-group">
+                            <label for="emNome">Nome do Medicamento</label>
+                            <input type="text" id="emNome"
+                                class="form-control"
+                                placeholder="Ex: Paracetamol 750mg"
+                                autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emQtd">Quantidade</label>
+                            <input type="number" id="emQtd"
+                                class="form-control" value="10" min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emUnidade">Tipo de Unidade</label>
+                            <select id="emUnidade" class="form-control">
+                                <option value="comprimidos">Comprimidos</option>
+                                <option value="cápsulas">Cápsulas</option>
+                                <option value="frascos">Frascos</option>
+                                <option value="ampolas">Ampolas</option>
+                                <option value="sachês">Sachês</option>
+                                <option value="unidades">Unidades</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emCategoria">Categoria Farmacológica</label>
+                            <select id="emCategoria" class="form-control">
+                                <option value="Analgésico/Antipirético">Analgésico/Antipirético</option>
+                                <option value="Antibiótico">Antibiótico</option>
+                                <option value="Anti-inflamatório">Anti-inflamatório</option>
+                                <option value="Antialérgico">Antialérgico</option>
+                                <option value="Protetor Gástrico">Protetor Gástrico</option>
+                                <option value="Antiespasmódico">Antiespasmódico</option>
+                                <option value="Antiemético">Antiemético</option>
+                                <option value="Solução">Solução</option>
+                                <option value="Vitamina/Suplemento">Vitamina/Suplemento</option>
+                                <option value="Geral">Geral</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-full btn-purple" onclick="darEntrada()">
+                            📥 Registrar Entrada no Estoque
+                        </button>
+
+                    </div>
+
+                    <!-- REPOR MEDICAMENTO -->
+
+                    <div id="painelRepor" style="display:none">
+
+                        <div class="form-group">
+                            <label for="selReporMed">Selecionar Medicamento</label>
+                            <select id="selReporMed" class="form-control">
+                                <option value="">-- Selecione --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reporQtd">Quantidade a Adicionar</label>
+                            <input type="number" id="reporQtd"
+                                class="form-control" value="10" min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reporObs">Observação (opcional)</label>
+                            <input type="text" id="reporObs"
+                                class="form-control"
+                                placeholder="Ex: Nota fiscal NF-001">
+                        </div>
+
+                        <button class="btn-full btn-purple" onclick="reporEstoque()">
+                            📦 Adicionar ao Estoque Existente
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- HISTÓRICO -->
+
+            <div class="card" style="margin-top:20px">
+
+                <div class="card-header">
+                    <h2>Últimas Entradas Registradas</h2>
+
+                    <button class="btn-sm btn-secondary"
+                        onclick="carregarHistoricoEntradas()">
+                        🔄
+                    </button>
+                </div>
+
+                <div class="card-body" id="historicoEntradas">
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>Nenhuma entrada registrada ainda.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- COLUNA DIREITA -->
+
+        <div class="card">
+
+            <div class="card-header">
+                <h2>Estoque Atual de Medicamentos</h2>
+
+                <button class="btn-sm btn-secondary" onclick="carregarEstoque()">
+                    🔄 Atualizar
+                </button>
+            </div>
+
+            <div class="card-body">
+
+                <div class="search-bar">
+                    <input type="text" class="search-input"
+                        id="buscaMed"
+                        placeholder="Buscar medicamento..."
+                        oninput="filtrarTabela()">
+                </div>
+
+                <div class="filter-chips" id="filterChips">
+                    <span class="chip active"
+                        onclick="setFiltro('todos', this)">Todos</span>
+                </div>
+
+                <div style="overflow-x:auto">
+
+                    <table class="estoque-table">
+
+                        <thead>
+                            <tr>
+                                <th>Medicamentos</th>
+                                <th>Categoria</th>
+                                <th>Disponível</th>
+                                <th>Unidade</th>
+                                <th style="text-align:right">Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tableEstoque">
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">⏳</div>
+                                        <p>Carregando...</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL EDITAR -->
+
+<div class="modal-overlay" id="modalEditar">
+
+    <div class="modal-box">
+
+        <div class="modal-title">Editar Estoque</div>
+
+        <div class="form-group">
+
+            <label id="modalMedNome"></label>
+
+            <label for="modalQtd">
+                Quantidade a adicionar (negativo para remover):
+            </label>
+
+            <input type="number" id="modalQtd"
+                class="form-control" value="10">
+
+        </div>
+
+        <div class="modal-actions">
+
+            <button class="btn-sm btn-secondary"
+                onclick="fecharModal()">
+                Cancelar
+            </button>
+
+            <button class="btn-sm btn-success"
+                onclick="confirmarEdicao()">
+                Confirmar
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // =========================================
+    // VARIÁVEIS GLOBAIS
+    // =========================================
+
+    let estoqueGlobal = [];
+    let filtroAtivo = "todos";
+    let editandoId = null;
+    let historicoEntradas = [];
+
+    const usuario = JSON.parse(
+        localStorage.getItem("hospitalar_user") || "{}"
+    );
+
+    if (usuario.nome) {
+        document.getElementById("nomeUsuario").textContent =
+            "📦 " + usuario.nome;
+    }
+
+    // =========================================
+    // FUNÇÕES AUXILIARES
+    // =========================================
+
+    function showToast(msg, tipo = "success") {
+        const toast = document.getElementById("toast");
+
+        toast.textContent = msg;
+        toast.className = `toast toast-${tipo} show`;
+
+        setTimeout(() => {
+            toast.className = "toast";
+        }, 4000);
+    }
+
+    async function requisicao(url, opcoes = {}) {
+        const resposta = await fetch(url, opcoes);
+
+        const texto = await resposta.text();
+
+        let data = {};
+
+        try {
+            data = texto ? JSON.parse(texto) : {};
+        } catch {
+            throw new Error("O servidor retornou uma resposta inválida.");
+        }
+
+        if (!resposta.ok) {
+            throw new Error(data.erro || data.mensagem ||
+                `Erro HTTP ${resposta.status}`);
+        }
+
+        if (data.erro) {
+            throw new Error(data.erro);
+        }
+
+        return data;
+    }
+
+    function escaparHTML(valor) {
+        return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        })[caractere]);
+    }
+
+    // =========================================
+    // ABAS
+    // =========================================
+
+    function setTab(tab) {
+        document.getElementById("painelNovo").style.display =
+            tab === "novo" ? "block" : "none";
+
+        document.getElementById("painelRepor").style.display =
+            tab === "repor" ? "block" : "none";
+
+        document.getElementById("tabNovo").className =
+            "tab-btn" + (tab === "novo" ? " active" : "");
+
+        document.getElementById("tabRepor").className =
+            "tab-btn" + (tab === "repor" ? " active" : "");
+
+        if (tab === "repor") {
+            preencherSelectRepor();
+        }
+    }
+
+    // =========================================
+    // CARREGAR ESTOQUE
+    // =========================================
+
+    async function carregarEstoque() {
+        try {
+            const data = await requisicao("/estoque");
+
+            if (!Array.isArray(data)) {
+                throw new Error("Formato de estoque inválido.");
+            }
+
+            estoqueGlobal = data;
+
+            atualizarStats(data);
+            renderizarFiltros(data);
+            filtrarTabela();
+            preencherSelectRepor();
+            verificarAlertas(data);
+
+        } catch (erro) {
+            showToast("Erro ao carregar estoque: " + erro.message, "error");
+        }
+    }
+
+    // =========================================
+    // INDICADORES
+    // =========================================
+
+    function atualizarStats(data) {
+        document.getElementById("statItens").textContent =
+            data.length;
+
+        document.getElementById("statOk").textContent =
+            data.filter(m => Number(m.quantidade) > 10).length;
+
+        document.getElementById("statBaixo").textContent =
+            data.filter(m =>
+                Number(m.quantidade) > 0 &&
+                Number(m.quantidade) <= 10
+            ).length;
+
+        document.getElementById("statZerado").textContent =
+            data.filter(m => Number(m.quantidade) <= 0).length;
+    }
+
+    // =========================================
+    // ALERTAS DE ESTOQUE
+    // =========================================
+
+    function verificarAlertas(data) {
+        const baixos = data.filter(m =>
+            Number(m.quantidade) > 0 &&
+            Number(m.quantidade) <= 10
+        );
+
+        const zerados = data.filter(m =>
+            Number(m.quantidade) <= 0
+        );
+
+        const elemento = document.getElementById("alertaEstoque");
+        const mensagens = [];
+
+        if (zerados.length) {
+            mensagens.push(
+                `${zerados.length} medicamento(s) zerado(s): ` +
+                zerados.map(m => m.nome).join(", ")
+            );
+        }
+
+        if (baixos.length) {
+            mensagens.push(
+                `${baixos.length} medicamento(s) com estoque baixo`
+            );
+        }
+
+        if (mensagens.length) {
+            document.getElementById("alertaTexto").textContent =
+                mensagens.join(" | ") + " - Repor com urgência!";
+
+            elemento.style.display = "flex";
+        } else {
+            elemento.style.display = "none";
+        }
+    }
+
+    // =========================================
+    // FILTROS
+    // =========================================
+
+    function renderizarFiltros(data) {
+        const categorias = [
+            ...new Set(data.map(m => m.categoria).filter(Boolean))
+        ];
+
+        const elemento = document.getElementById("filterChips");
+
+        elemento.innerHTML = "";
+
+        const chipTodos = document.createElement("span");
+
+        chipTodos.className =
+            "chip" + (filtroAtivo === "todos" ? " active" : "");
+
+        chipTodos.textContent = "Todos";
+        chipTodos.onclick = () => setFiltro("todos", chipTodos);
+
+        elemento.appendChild(chipTodos);
+
+        categorias.forEach(categoria => {
+            const chip = document.createElement("span");
+
+            chip.className =
+                "chip" + (filtroAtivo === categoria ? " active" : "");
+
+            chip.textContent = categoria;
+
+            chip.onclick = () => setFiltro(categoria, chip);
+
+            elemento.appendChild(chip);
+        });
+    }
+
+    function setFiltro(categoria, elemento) {
+        filtroAtivo = categoria;
+
+        document.querySelectorAll(".chip").forEach(chip => {
+            chip.classList.remove("active");
+        });
+
+        elemento.classList.add("active");
+
+        filtrarTabela();
+    }
+
+    function filtrarTabela() {
+        const busca = document.getElementById("buscaMed")
+            .value.toLowerCase().trim();
+
+        const filtrados = estoqueGlobal.filter(m => {
+            const matchCategoria =
+                filtroAtivo === "todos" ||
+                m.categoria === filtroAtivo;
+
+            const matchBusca =
+                String(m.nome || "").toLowerCase().includes(busca) ||
+                String(m.categoria || "").toLowerCase().includes(busca);
+
+            return matchCategoria && matchBusca;
+        });
+
+        renderizarTabela(filtrados);
+    }
+
+    // =========================================
+    // SITUAÇÃO DO ESTOQUE
+    // =========================================
+
+    function getStockClass(q) {
+        q = Number(q);
+
+        if (q <= 0) return "stock-empty";
+        if (q <= 5) return "stock-critical";
+        if (q <= 10) return "stock-low";
+
+        return "stock-ok";
+    }
+
+    function getStockIcon(q) {
+        q = Number(q);
+
+        if (q <= 0) return "🚫";
+        if (q <= 5) return "🔴";
+        if (q <= 10) return "🟡";
+
+        return "🟢";
+    }
+
+    // =========================================
+    // RENDERIZAR TABELA
+    // =========================================
+
+    function renderizarTabela(data) {
+        const tbody = document.getElementById("tableEstoque");
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <div class="empty-icon">📦</div>
+                            <p>Nenhum medicamento encontrado.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = data.map(m => `
+            <tr>
+                <td>
+                    <div class="med-name">
+                        ${escaparHTML(m.nome)}
+                    </div>
+                </td>
+
+                <td>
+                    <div class="med-cat">
+                        ${escaparHTML(m.categoria || "-")}
+                    </div>
+                </td>
+
+                <td>
+                    <span class="stock-badge ${getStockClass(m.quantidade)}">
+                        ${getStockIcon(m.quantidade)}
+                        ${Number(m.quantidade)}
+                    </span>
+                </td>
+
+                <td style="color:var(--slate-500);font-size:13px">
+                    ${escaparHTML(m.unidade || "-")}
+                </td>
+
+                <td>
+                    <div class="action-row">
+                        <button class="btn-sm btn-success"
+                            onclick="abrirModalEditar(${Number(m.id)}, ${Number(m.quantidade)})">
+                            Editar
+                        </button>
+
+                        <button class="btn-sm btn-danger-sm"
+                            onclick="removerMedicamento(${Number(m.id)}, ${JSON.stringify(String(m.nome || ""))})">
+                            🗑️
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    // =========================================
+    // HISTÓRICO
+    // =========================================
+
+    function adicionarHistorico(tipo, medicamento, qtd) {
+        historicoEntradas.unshift({
+            tipo,
+            nome: medicamento.nome,
+            qtd,
+            unidade: medicamento.unidade,
+            hora: new Date().toLocaleTimeString("pt-BR", {
+                hour: "2-digit",
+                minute: "2-digit"
+            }),
+            responsavel: usuario.nome || "Almoxarifado"
+        });
+
+        renderizarHistorico();
+    }
+
+    function carregarHistoricoEntradas() {
+        renderizarHistorico();
+    }
+
+    function renderizarHistorico() {
+        const div = document.getElementById("historicoEntradas");
+
+        if (historicoEntradas.length === 0) {
+            div.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>Nenhuma entrada registrada nesta sessão.</p>
+                </div>
+            `;
+            return;
+        }
+
+        div.innerHTML = historicoEntradas.slice(0, 15).map(h => `
+            <div class="hist-item">
+
+                <div class="hist-icon">
+                    ${h.tipo === "reposicao" ? "📦" : "📥"}
+                </div>
+
+                <div class="hist-info">
+                    <div class="hist-med">
+                        ${escaparHTML(h.nome)}
+                    </div>
+
+                    <div class="hist-sub">
+                        🕒 ${escaparHTML(h.hora)}
+                        • 👤 ${escaparHTML(h.responsavel)}
+                        • ${h.tipo === "reposicao" ? "Reposição" : "Novo cadastro"}
+                    </div>
+                </div>
+
+                <div class="hist-qty-pos">
+                    +${h.qtd} ${escaparHTML(h.unidade)}
+                </div>
+
+            </div>
+        `).join("");
+    }
+
+    // =========================================
+    // DAR ENTRADA EM NOVO MEDICAMENTO
+    // =========================================
+
+    async function darEntrada() {
+        const nome = document.getElementById("emNome").value.trim();
+
+        const qtd = parseInt(
+            document.getElementById("emQtd").value,
+            10
+        );
+
+        const unidade = document.getElementById("emUnidade").value;
+        const categoria = document.getElementById("emCategoria").value;
+
+        if (!nome) {
+            showToast("Digite o nome do medicamento.", "warning");
+            return;
+        }
+
+        if (!Number.isInteger(qtd) || qtd <= 0) {
+            showToast("Quantidade inválida.", "warning");
+            return;
+        }
+
+        try {
+            const data = await requisicao("/estoque", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome,
+                    quantidade: qtd,
+                    unidade,
+                    categoria
+                })
+            });
+
+            const medicamento = data.medicamento;
+
+            if (!medicamento) {
+                throw new Error("O servidor não retornou o medicamento cadastrado.");
+            }
+
+            showToast(
+                data.mensagem || "Medicamento cadastrado com sucesso!",
+                "success"
+            );
+
+            document.getElementById("emNome").value = "";
+            document.getElementById("emQtd").value = "10";
+
+            adicionarHistorico("entrada", medicamento, qtd);
+
+            await carregarEstoque();
+
+        } catch (erro) {
+            showToast("Erro ao registrar entrada: " + erro.message, "error");
+        }
+    }
+
+    // =========================================
+    // SELECT DE REPOSIÇÃO
+    // =========================================
+
+    function preencherSelectRepor() {
+        const select = document.getElementById("selReporMed");
+
+        const valorAtual = select.value;
+
+        select.innerHTML = `
+            <option value="">-- Selecione --</option>
+        `;
+
+        estoqueGlobal.forEach(m => {
+            const option = document.createElement("option");
+
+            option.value = m.id;
+
+            option.textContent =
+                `${m.nome} (atual: ${m.quantidade} ${m.unidade || ""})`;
+
+            select.appendChild(option);
+        });
+
+        if (estoqueGlobal.some(m => String(m.id) === valorAtual)) {
+            select.value = valorAtual;
+        }
+    }
+
+    // =========================================
+    // REPOR ESTOQUE EXISTENTE
+    // =========================================
+
+    async function reporEstoque() {
+        const id = document.getElementById("selReporMed").value;
+
+        const qtd = parseInt(
+            document.getElementById("reporQtd").value,
+            10
+        );
+
+        if (!id) {
+            showToast("Selecione um medicamento.", "warning");
+            return;
+        }
+
+        if (!Number.isInteger(qtd) || qtd <= 0) {
+            showToast("Quantidade inválida.", "warning");
+            return;
+        }
+
+        try {
+            const data = await requisicao(`/estoque/${encodeURIComponent(id)}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    quantidade: qtd
+                })
+            });
+
+            const medicamento = data.medicamento;
+
+            if (!medicamento) {
+                throw new Error("O servidor não retornou os dados atualizados.");
+            }
+
+            showToast(
+                `+${qtd} ${medicamento.unidade} adicionados! Novo total: ${medicamento.quantidade}`,
+                "success"
+            );
+
+            document.getElementById("reporQtd").value = "10";
+            document.getElementById("reporObs").value = "";
+
+            adicionarHistorico("reposicao", medicamento, qtd);
+
+            await carregarEstoque();
+
+        } catch (erro) {
+            showToast("Erro ao repor estoque: " + erro.message, "error");
+        }
+    }
+
+    // =========================================
+    // MODAL DE EDIÇÃO
+    // =========================================
+
+    function abrirModalEditar(id, qtdAtual) {
+        editandoId = id;
+
+        const medicamento = estoqueGlobal.find(
+            m => String(m.id) === String(id)
+        );
+
+        if (!medicamento) {
+            showToast("Medicamento não encontrado.", "error");
+            return;
+        }
+
+        document.getElementById("modalMedNome").textContent =
+            `💊 ${medicamento.nome} — Estoque atual: ${qtdAtual}`;
+
+        document.getElementById("modalQtd").value = "10";
+
+        document.getElementById("modalEditar").classList.add("open");
+    }
+
+    function fecharModal() {
+        document.getElementById("modalEditar").classList.remove("open");
+
+        editandoId = null;
+    }
+
+    // =========================================
+    // CONFIRMAR EDIÇÃO
+    // =========================================
+
+    async function confirmarEdicao() {
+        const qtd = parseInt(
+            document.getElementById("modalQtd").value,
+            10
+        );
+
+        if (!Number.isInteger(qtd) || qtd === 0) {
+            showToast("Digite uma quantidade válida diferente de zero.", "warning");
+            return;
+        }
+
+        if (editandoId === null) {
+            showToast("Nenhum medicamento selecionado.", "warning");
+            return;
+        }
+
+        try {
+            const data = await requisicao(
+                `/estoque/${encodeURIComponent(editandoId)}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        quantidade: qtd
+                    })
+                }
+            );
+
+            const medicamento = data.medicamento;
+
+            if (!medicamento) {
+                throw new Error("O servidor não retornou os dados atualizados.");
+            }
+
+            showToast(
+                `Estoque atualizado! Novo total: ${medicamento.quantidade}`,
+                "success"
+            );
+
+            fecharModal();
+
+            await carregarEstoque();
+
+        } catch (erro) {
+            showToast("Erro ao atualizar estoque: " + erro.message, "error");
+        }
+    }
+
+    // =========================================
+    // REMOVER MEDICAMENTO
+    // =========================================
+
+    async function removerMedicamento(id, nome) {
+        const confirmar = confirm(
+            `Tem certeza que deseja REMOVER "${nome}" do estoque?\n\nEsta ação não pode ser desfeita.`
+        );
+
+        if (!confirmar) return;
+
+        try {
+            await requisicao(`/estoque/${encodeURIComponent(id)}`, {
+                method: "DELETE"
+            });
+
+            showToast(
+                `"${nome}" removido do estoque.`,
+                "success"
+            );
+
+            await carregarEstoque();
+
+        } catch (erro) {
+            showToast("Erro ao remover medicamento: " + erro.message, "error");
+        }
+    }
+
+    // =========================================
+    // FECHAR MODAL AO CLICAR FORA
+    // =========================================
+
+    document.getElementById("modalEditar").addEventListener("click", function(e) {
+        if (e.target === this) {
+            fecharModal();
+        }
+    });
+
+    // =========================================
+    // INICIALIZAÇÃO
+    // =========================================
+
+    document.addEventListener("DOMContentLoaded", () => {
+        carregarEstoque();
+
+        setInterval(() => {
+            carregarEstoque();
+        }, 30000);
+    });
+
+</script>
+
+</body>
+</html>
