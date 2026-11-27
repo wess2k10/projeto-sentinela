@@ -1,0 +1,24 @@
+{
+  "usuarios": [
+    { "usuario": "triagem", "senha": "123", "tipo": "triagem" },
+    { "usuario": "medico", "senha": "123", "tipo": "medico" },
+    { "usuario": "atendimento", "senha": "123", "tipo": "atendimento" },
+    { "id": 1792667921791, "usuario": "wesley", "senha": "12345", "tipo": "medico" },
+    { "id": 1792670046163, "usuario": "wesley2", "senha": "123", "tipo": "atendimento" }
+  ],
+  "pacientes": [
+    { "id": 1776857728699, "nome": "", "cpf": "", "tipo": "Particular", "status": "triagem", "createdAt": "2026-04-22T11:35:28.699Z" },
+    { "id": 1776857728700, "nome": "jesus", "cpf": "0000000000000", "tipo": "Particular", "status": "triagem", "createdAt": "2026-04-22T13:51:28.237Z" },
+    { "id": 1776868888454, "nome": "kinder ovo ", "cpf": "6546468844", "tipo": "Particular", "status": "triagem", "createdAt": "2026-04-22T14:41:28.454Z" },
+    { "id": 1776871886695, "nome": "enzo", "cpf": "545343554", "tipo": "Particular", "status": "triagem", "createdAt": "2026-04-22T15:31:26.695Z" },
+    { "id": 1777895890000, "nome": "teste08", "cpf": "rgregregergerg", "tipo": "Convenio", "status": "triagem", "createdAt": "2026-05-04T11:58:10.000Z" },
+    { "id": 1777895903949, "nome": "teste08", "cpf": "45345435434353", "tipo": "Particular", "status": "triagem", "createdAt": "2026-05-04T11:58:23.949Z" },
+    { "id": 1778767273416, "nome": "yan", "cpf": "53434449.9.449", "tipo": "Particular", "status": "triagem", "createdAt": "2026-05-14T14:01:13.416Z" },
+    { "id": 1778768219883, "nome": "test50", "cpf": "3253545235", "tipo": "Particular", "status": "triagem", "createdAt": "2026-05-14T14:16:59.883Z" },
+    { "id": 1778843781579, "nome": "adriana", "cpf": "45455435", "tipo": "Particular", "status": "triagem", "createdAt": "2026-05-15T11:16:21.579Z" },
+    { "id": 1786029712877, "nome": "wesley", "cpf": "123997418724", "tipo": "Particular", "status": "triagem", "createdAt": "2026-08-06T15:21:52.877Z" }
+  ],
+  "triagens": [],
+  "consultas": [],
+  "estoque": []
+}
